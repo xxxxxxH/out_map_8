@@ -26,4 +26,37 @@
         app:fabSize="normal"
         app:borderWidth="0dp"
         app:rippleColor="#cccccc" />
+
+    <RelativeLayout
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_height="?actionBarSize">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayout"
+            app:boxBackgroundColor="#80AED581"
+            android:layout_width="match_parent"
+            android:hint="Keyword"
+            android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:textColor="#000"
+            android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignStart="@+id/searchView"
+        android:layout_alignEnd="@+id/searchView"
+        android:layout_below="@+id/searchView"/>
 </RelativeLayout>

@@ -6,42 +6,23 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/nearby"
+        android:id="@+id/move"
         style="@style/optionItemTvStyle"
-        android:text="Nearby" />
-
-    <TextView
-        android:id="@+id/streetview"
-        style="@style/optionItemTvStyle"
-        android:text="Streetview" />
+        android:text="Move Map" />
 
     <TextView
         android:id="@+id/inter"
         style="@style/optionItemTvStyle"
         android:text="Interactive" />
 
-    <TextView
-        android:id="@+id/normal"
-        style="@style/optionItemTvStyle"
-        android:text="Normal Map" />
 
     <TextView
-        android:id="@+id/hybird"
+        android:id="@+id/setting"
         style="@style/optionItemTvStyle"
-        android:text="Hybird Map" />
+        android:text="Setting" />
 
     <TextView
-        android:id="@+id/sat"
+        android:id="@+id/share"
         style="@style/optionItemTvStyle"
-        android:text="Sat Map" />
-
-    <TextView
-        android:id="@+id/terrain"
-        style="@style/optionItemTvStyle"
-        android:text="Terrain Map" />
-
-    <TextView
-        android:id="@+id/search"
-        style="@style/optionItemTvStyle"
-        android:text="Search" />
+        android:text="Share" />
 </LinearLayout>
