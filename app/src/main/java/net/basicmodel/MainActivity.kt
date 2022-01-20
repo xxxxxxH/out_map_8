@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.TextUtils
+import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,13 +25,14 @@ import com.jessewu.library.view.ViewHolder
 import es.dmoral.prefs.Prefs
 import kotlinx.android.synthetic.main.activity_main.*
 import me.shaohui.bottomdialog.BottomDialog
-import org.w3c.dom.Text
-import utils.NearbyData
+import net.utils.NearbyData
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     var map: GoogleMap? = null
     val nearData = NearbyData.initNearbyData()
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -48,29 +49,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         adapter.addData(nearData)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
+        adapter.setOnItemClickListener { i, s ->
+            startSearch(s)
+        }
 
 
         fb.setOnClickListener {
             createDlg()
         }
-        editText.addTextChangedListener(object :TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s!!.isNotEmpty()){
-                    if (recycler.visibility == View.GONE){
-                        recycler.visibility = View.VISIBLE
-                    }
+        editText.setOnTouchListener { p0, p1 ->
+            if (p1!!.action == MotionEvent.ACTION_DOWN) {
+                if (recycler.visibility == View.GONE) {
+                    recycler.visibility = View.VISIBLE
                 }
             }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
+            true
+        }
+        search.setOnClickListener {
+            startSearch(editText.text.toString())
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -162,5 +159,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             .setDimAmount(0.8f)
             .show()
+    }
+
+    fun startSearch(key: String) {
+        if (TextUtils.isEmpty(key))
+            return
+        try {
+            if (TextUtils.isEmpty(key))
+                return
+            val i = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    "http://maps.google.com/maps?q=${key}&hl=en"
+                )
+            )
+            i.setPackage("com.google.android.apps.maps")
+            startActivity(i)
+            recycler.visibility = View.GONE
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package net.basicmodel
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.TextView
@@ -13,7 +14,7 @@ import com.jessewu.library.SuperAdapter
 import com.jessewu.library.view.ViewHolder
 import com.shehuan.niv.NiceImageView
 import com.squareup.picasso.Picasso
-import entity.DataEntity
+import net.entity.DataEntity
 import kotlinx.android.synthetic.main.activity_interactive.*
 
 class InteractiveActivity : AppCompatActivity() {
@@ -66,8 +67,10 @@ class InteractiveActivity : AppCompatActivity() {
             adapter.addData(data)
             recycler.layoutManager = LinearLayoutManager(this@InteractiveActivity)
             recycler.adapter = adapter
-            adapter.setOnItemClickListener { i, dataEntity ->
-                
+            adapter.setOnItemClickListener { _, dataEntity ->
+                val i = Intent(this@InteractiveActivity,DetailsActivity::class.java)
+                i.putExtra("data",dataEntity as DataEntity)
+                startActivity(i)
             }
         }
     }

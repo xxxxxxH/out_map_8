@@ -1,4 +1,4 @@
-package adapter
+package net.adapter
 
 import android.widget.TextView
 import com.shehuan.niv.NiceImageView

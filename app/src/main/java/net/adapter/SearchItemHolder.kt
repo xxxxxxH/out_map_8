@@ -1,4 +1,4 @@
-package adapter
+package net.adapter
 
 import com.zuzi.adapter.FastBaseHolder
 import com.zuzi.adapter.annotation.FastAttribute

@@ -1,4 +1,4 @@
-package utils
+package net.utils
 
 object NearbyData {
     fun initNearbyData(): ArrayList<String> {
