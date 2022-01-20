@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.jessewu.library.SuperAdapter
 import com.jessewu.library.view.ViewHolder
+import com.yarolegovich.lovelydialog.LovelyCustomDialog
 import es.dmoral.prefs.Prefs
 import kotlinx.android.synthetic.main.activity_main.*
 import me.shaohui.bottomdialog.BottomDialog
@@ -31,6 +33,8 @@ import net.utils.NearbyData
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     var map: GoogleMap? = null
     val nearData = NearbyData.initNearbyData()
+    var moveLat = 0.0
+    var moveLgt = 0.0
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +92,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(p0: GoogleMap?) {
         map = p0
-        map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
+        val type = Prefs.with(this).readInt("map", -1)
+        if (type != -1) {
+            when (type) {
+                0 -> {
+                    map?.let {
+                        it.mapType = GoogleMap.MAP_TYPE_NORMAL
+                    }
+                }
+                1 -> {
+                    map?.let {
+                        it.mapType = GoogleMap.MAP_TYPE_HYBRID
+                    }
+                }
+                2 -> {
+                    map?.let {
+                        it.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                    }
+                }
+                3 -> {
+                    map?.let {
+                        it.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                    }
+                }
+            }
+        }
         map!!.uiSettings.isZoomControlsEnabled = true
         map!!.isMyLocationEnabled = true
         map!!.uiSettings.isMyLocationButtonEnabled = true
@@ -156,6 +184,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     startActivity(Intent(this, InteractiveActivity::class.java))
                     dlg.dismiss()
                 }
+                it.findViewById<TextView>(R.id.move).setOnClickListener {
+                    createDlg2()
+                    dlg.dismiss()
+                }
+                it.findViewById<TextView>(R.id.share).setOnClickListener {
+                    val intent = Intent()
+                    intent.action = Intent.ACTION_SEND
+                    intent.putExtra(Intent.EXTRA_TEXT, this@MainActivity.getString(R.string.app_name))
+                    intent.type = "text/plain"
+                    startActivity(Intent.createChooser(intent, "Share Map"))
+                    dlg.dismiss()
+                }
             }
             .setDimAmount(0.8f)
             .show()
@@ -179,5 +219,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun createDlg2() {
+        val v = layoutInflater.inflate(R.layout.dialog_move,null)
+        val longitudeEt = v.findViewById<EditText>(R.id.longitudeEt)
+        val latitudeEt = v.findViewById<EditText>(R.id.latitudeEt)
+        LovelyCustomDialog(this).setView(v)
+            .setTitle("Please Input Location")
+            .setListener(R.id.ok, true){
+                moveLgt = longitudeEt.text.toString().toDouble()
+                moveLat = latitudeEt.text.toString().toDouble()
+                if (moveLat == 0.0 || moveLgt == 0.0){
+                    return@setListener
+                }
+                map?.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        getCameraPosition(
+                            moveLat,
+                            moveLgt
+                        )
+                    ), 1000, null
+                )
+            }
+            .show()
+
     }
 }

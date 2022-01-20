@@ -16,6 +16,7 @@ class SplashActivity : AppCompatActivity() {
             object : PermissionListener {
                 override fun permissionGranted(permission: Array<out String>) {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                    finish()
                 }
 
                 override fun permissionDenied(permission: Array<out String>) {
